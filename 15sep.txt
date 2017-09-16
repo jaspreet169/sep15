@@ -1,0 +1,369 @@
+----------views---------
+MariaDB [mytestDB]> SHOW TABLES;
++--------------------+
+| Tables_in_mytestdb |
++--------------------+
+| manu               |
+| manufacturers      |
+| pet                |
+| pieces             |
+| products           |
+| providers          |
+| provides           |
+| student            |
+| student3           |
+| students1          |
+| t                  |
++--------------------+
+11 rows in set (0.14 sec)
+
+MariaDB [mytestDB]> DESC products;
++--------------+---------------+------+-----+---------+-------+
+| Field        | Type          | Null | Key | Default | Extra |
++--------------+---------------+------+-----+---------+-------+
+| Code         | int(11)       | NO   | PRI | NULL    |       |
+| Name         | varchar(255)  | NO   |     | NULL    |       |
+| Price        | decimal(10,0) | NO   |     | NULL    |       |
+| Manufacturer | int(11)       | YES  | MUL | NULL    |       |
++--------------+---------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+MariaDB [mytestDB]> CREATE VIEW V1 as SELECT code, name from products;
+Query OK, 0 rows affected (0.09 sec)
+
+MariaDB [mytestDB]> show tables;
++--------------------+
+| Tables_in_mytestdb |
++--------------------+
+| manu               |
+| manufacturers      |
+| pet                |
+| pieces             |
+| products           |
+| providers          |
+| provides           |
+| student            |
+| student3           |
+| students1          |
+| t                  |
+| v1                 |
++--------------------+
+12 rows in set (0.00 sec)
+
+MariaDB [mytestDB]> select * from v1;
++------+-----------------+
+| code | name            |
++------+-----------------+
+|    1 | Hard drive      |
+|    2 | Memory          |
+|    3 | ZIP drive       |
+|    4 | Floppy disk     |
+|    5 | Monitor         |
+|    6 | DVD drive       |
+|    7 | CD drive        |
+|    8 | Printer         |
+|    9 | Toner cartridge |
+|   10 | DVD burner      |
+|   11 | usb drive       |
+|   12 | usb drive       |
++------+-----------------+
+12 rows in set (0.02 sec)
+
+MariaDB [mytestDB]> CREATE VIEW V1 as SELECT code, name from products WHERE NAME LIKE '%drive%';
+ERROR 1050 (42S01): Table 'V1' already exists
+MariaDB [mytestDB]> CREATE VIEW V2 as SELECT code, name from products WHERE NAME LIKE '%drive%';
+Query OK, 0 rows affected (0.01 sec)
+
+MariaDB [mytestDB]> select * from v2;
++------+------------+
+| code | name       |
++------+------------+
+|    1 | Hard drive |
+|    3 | ZIP drive  |
+|    6 | DVD drive  |
+|    7 | CD drive   |
+|   11 | usb drive  |
+|   12 | usb drive  |
++------+------------+
+6 rows in set (0.00 sec)
+
+MariaDB [mytestDB]> show tables;
++--------------------+
+| Tables_in_mytestdb |
++--------------------+
+| manu               |
+| manufacturers      |
+| pet                |
+| pieces             |
+| products           |
+| providers          |
+| provides           |
+| student            |
+| student3           |
+| students1          |
+| t                  |
+| v1                 |
+| v2                 |
++--------------------+
+13 rows in set (0.00 sec)
+
+MariaDB [mytestDB]> drop table t;
+Query OK, 0 rows affected (0.34 sec)
+
+MariaDB [mytestDB]> INSERT INTO V1 VALUES(13,'iphone X');
+Query OK, 1 row affected, 1 warning (0.08 sec)
+
+MariaDB [mytestDB]> select * from products;
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | usb drive       |   200 |         NULL |
+|   12 | usb drive       |   300 |         NULL |
+|   13 | iphone X        |     0 |         NULL |
++------+-----------------+-------+--------------+
+13 rows in set (0.00 sec)
+
+MariaDB [mytestDB]> INSERT INTO V2 VALUES(14,'windows');
+Query OK, 1 row affected, 1 warning (0.06 sec)
+
+MariaDB [mytestDB]> desc products;
++--------------+---------------+------+-----+---------+-------+
+| Field        | Type          | Null | Key | Default | Extra |
++--------------+---------------+------+-----+---------+-------+
+| Code         | int(11)       | NO   | PRI | NULL    |       |
+| Name         | varchar(255)  | NO   |     | NULL    |       |
+| Price        | decimal(10,0) | NO   |     | NULL    |       |
+| Manufacturer | int(11)       | YES  | MUL | NULL    |       |
++--------------+---------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+MariaDB [mytestDB]> CREATE VIEW V3as SELECT code, name from products;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'SELECT code, name from products' at line 1
+MariaDB [mytestDB]> CREATE VIEW V3 as SELECT code, name from products;
+Query OK, 0 rows affected (0.05 sec)
+
+MariaDB [mytestDB]> INSERT INTO V3 VALUES('i phone 7s');
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+MariaDB [mytestDB]> drop view v3;
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [mytestDB]> CREATE VIEW V3 as SELECT  name from products;
+Query OK, 0 rows affected (0.08 sec)
+
+MariaDB [mytestDB]> INSERT INTO V3 VALUES('i phone 7s');
+Query OK, 1 row affected, 2 warnings (0.08 sec)
+
+MariaDB [mytestDB]> select * from v3;
++-----------------+
+| name            |
++-----------------+
+| i phone 7s      |
+| Hard drive      |
+| Memory          |
+| ZIP drive       |
+| Floppy disk     |
+| Monitor         |
+| DVD drive       |
+| CD drive        |
+| Printer         |
+| Toner cartridge |
+| DVD burner      |
+| usb drive       |
+| usb drive       |
+| iphone X        |
+| windows         |
++-----------------+
+15 rows in set (0.00 sec)
+
+MariaDB [mytestDB]> select * from products;
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    0 | i phone 7s      |     0 |         NULL |
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | usb drive       |   200 |         NULL |
+|   12 | usb drive       |   300 |         NULL |
+|   13 | iphone X        |     0 |         NULL |
+|   14 | windows         |     0 |         NULL |
++------+-----------------+-------+--------------+
+15 rows in set (0.00 sec)
+
+MariaDB [mytestDB]> UPDATE V2  SET name='new monitor' WHERE Name='monitor';
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+MariaDB [mytestDB]> select * from v2;
++------+------------+
+| code | name       |
++------+------------+
+|    1 | Hard drive |
+|    3 | ZIP drive  |
+|    6 | DVD drive  |
+|    7 | CD drive   |
+|   11 | usb drive  |
+|   12 | usb drive  |
++------+------------+
+6 rows in set (0.00 sec)
+
+MariaDB [mytestDB]> select * from products;
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    0 | i phone 7s      |     0 |         NULL |
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | usb drive       |   200 |         NULL |
+|   12 | usb drive       |   300 |         NULL |
+|   13 | iphone X        |     0 |         NULL |
+|   14 | windows         |     0 |         NULL |
++------+-----------------+-------+--------------+
+15 rows in set (0.00 sec)
+
+MariaDB [mytestDB]> INSERT INTO V2 VALUES(15,'ipod');
+Query OK, 1 row affected, 1 warning (0.08 sec)
+
+MariaDB [mytestDB]> select * from v2;
++------+------------+
+| code | name       |
++------+------------+
+|    1 | Hard drive |
+|    3 | ZIP drive  |
+|    6 | DVD drive  |
+|    7 | CD drive   |
+|   11 | usb drive  |
+|   12 | usb drive  |
++------+------------+
+6 rows in set (0.00 sec)
+
+MariaDB [mytestDB]> select * from products;
++------+-----------------+-------+--------------+
+| Code | Name            | Price | Manufacturer |
++------+-----------------+-------+--------------+
+|    0 | i phone 7s      |     0 |         NULL |
+|    1 | Hard drive      |   240 |            5 |
+|    2 | Memory          |   120 |            6 |
+|    3 | ZIP drive       |   150 |            4 |
+|    4 | Floppy disk     |     5 |            6 |
+|    5 | Monitor         |   240 |            1 |
+|    6 | DVD drive       |   180 |            2 |
+|    7 | CD drive        |    90 |            2 |
+|    8 | Printer         |   270 |            3 |
+|    9 | Toner cartridge |    66 |            3 |
+|   10 | DVD burner      |   180 |            2 |
+|   11 | usb drive       |   200 |         NULL |
+|   12 | usb drive       |   300 |         NULL |
+|   13 | iphone X        |     0 |         NULL |
+|   14 | windows         |     0 |         NULL |
+|   15 | ipod            |     0 |         NULL |
++------+-----------------+-------+--------------+
+16 rows in set (0.00 sec)
+
+MariaDB [mytestDB]> DELETE FROM v2 HWERE code=12;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'HWERE code=12' at line 1
+MariaDB [mytestDB]> DELETE FROM v2 WHERE code=12;
+Query OK, 1 row affected (0.05 sec)
+
+MariaDB [mytestDB]> select * from v2;
++------+------------+
+| code | name       |
++------+------------+
+|    1 | Hard drive |
+|    3 | ZIP drive  |
+|    6 | DVD drive  |
+|    7 | CD drive   |
+|   11 | usb drive  |
++------+------------+
+5 rows in set (0.00 sec)
+MariaDB [mytestDB]> CREATE TABLE audit (op_id INT AUTO_INCREMENT PRIMARY KEY , table_name VARCHAR(10) NOT NULL, op_name VARCHAR(10) NOT NULL, op_date DATETIME DEFAULT CURRENT_TIMESTAMP);
+Query OK, 0 rows affected (0.31 sec)
+
+MariaDB [mytestDB]> DESC audit;
++------------+-------------+------+-----+-------------------+----------------+
+| Field      | Type        | Null | Key | Default           | Extra          |
++------------+-------------+------+-----+-------------------+----------------+
+| op_id      | int(11)     | NO   | PRI | NULL              | auto_increment |
+| table_name | varchar(10) | NO   |     | NULL              |                |
+| op_name    | varchar(10) | NO   |     | NULL              |                |
+| op_date    | datetime    | YES  |     | CURRENT_TIMESTAMP |                |
++------------+-------------+------+-----+-------------------+----------------+
+4 rows in set (0.00 sec)
+
+MariaDB [mytestDB]> INSERT INTO  audit(table_name,op_name) VALUES('products','insert');
+Query OK, 1 row affected (0.09 sec)
+
+MariaDB [mytestDB]> select * from audit;
++-------+------------+---------+---------------------+
+| op_id | table_name | op_name | op_date             |
++-------+------------+---------+---------------------+
+|     1 | products   | insert  | 2017-09-15 19:06:15 |
++-------+------------+---------+---------------------+
+1 row in set (0.00 sec)
+ --------- trigger--------
+ 
+ ---INSERT TRIGGER---
+ delimiter //
+CREATE TRIGGER Insert_Check_Products AFTER INSERT ON Products 
+    FOR EACH ROW
+    BEGIN
+        INSERT INTO AUDIT(TABLENAME,OperationName) VALUES('Products','Delete');
+    END; //
+delimiter;
+
+INSERT INTO Products VALUES(16,'Apple TV',360,1);
+
+Select * FROM audit;
+
+---UPDATE TRIGGER---
+
+delimiter //
+CREATE TRIGGER Update_Check_Products AFTER UPDATE ON Products 
+    FOR EACH ROW
+    BEGIN
+        INSERT INTO AUDIT(TABLENAME,OperationName) VALUES('Products','Update');
+    END; //
+delimiter;
+
+Update Products set Name = 'New Monitor' where name = 'Monitor';
+
+Select * FROM audit;
+
+---DELETE TRIGGER---
+
+delimiter //
+CREATE TRIGGER Delete_Check_Products AFTER DELETE ON Products 
+    FOR EACH ROW
+    BEGIN
+        INSERT INTO AUDIT(TABLENAME,OperationName) VALUES('Products','Deletes');
+    END; //
+delimiter;
+
+DELETE FROM products Where code = 16;
+
+Select * FROM audit;
